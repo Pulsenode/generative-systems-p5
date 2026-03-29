@@ -1,30 +1,76 @@
-let n = 9, i, s;
-let a = [ n * 4 ], d;
-
+let particles = [];
+let nbParticules = 15; 
 
 function setup() {
-  createCanvas(1000, 1000);
+  createCanvas(windowWidth, windowHeight);
+  
 
-  stroke(-1);
+  for (let a = 0; a < nbParticules; a++) {
+    particles.push(new Particle());
+  }
+  
+  strokeWeight(1);
   noFill();
-  for(i = 0; i < n * 2; i++) {
-    a[ i ] = random(800);
-    a[ i + n * 2 ] = 1 - random(2);
+}
+
+function mouseClicked() {
+  background(0); // Clear the canvas
+  particles = [];
+  for (let a = 0; a < nbParticules; a++) {
+    particles.push(new Particle());
   }
 }
-function draw(){
-  clear();
-    for(i = 0; i < n; i++) {
-      for(s = 0; s < n; s++) {
-        d=dist(a[i], a[i+n], a[s], a[s+n]);
-        stroke(5e4 / d);
-        circle(a[i], a[i+n], d);
-        line(a[i], a[i+n], a[s], a[s+n]);
-      }
 
-      a[i] += a[i + n * 2];
-      if(a[i] > 10000 || a[i] < 0) a[i + n * 2] *= -1;
-      a[i+n] += a[i+n*3];
-      if(a[i+n] > 1000 || a[i + n] < 0) a[i + n * 3] *= -1;
+function draw() {
+  background(0); 
+
+
+  for (let a = 0; a < particles.length; a++) {
+    let p1 = particles[a];
+    
+    p1.move(); 
+    p1.bounce();  
+    
+
+    for (let b = 0; b < particles.length; b++) {
+      let p2 = particles[b];
+      
+
+      let d = dist(p1.x, p1.y, p2.x, p2.y);
+
+      if (d > 0 && d < 600) {
+
+        let luminosite = map(d, 0, 600, 255, 0);
+        stroke(255, luminosite); 
+        
+
+        circle(p1.x, p1.y, d);
+        line(p1.x, p1.y, p2.x, p2.y);
+      }
+    }
+
+    text(a, p1.x, p1.y);
+    textSize(40);
+    stroke(1);
+  }
+}
+
+
+class Particle {
+  constructor() {
+    this.x = random(width);
+    this.y = random(height);
+    this.vx = random(-1.5, 1.5); 
+    this.vy = random(-1.5, 1.5); 
+  }
+
+  move() {
+    this.x += this.vx;
+    this.y += this.vy;
+  }
+
+  bounce() {
+    if (this.x < 0 || this.x > width) this.vx *= -1;
+    if (this.y < 0 || this.y > height) this.vy *= -1;
   }
 }
