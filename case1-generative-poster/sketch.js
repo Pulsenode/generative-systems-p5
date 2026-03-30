@@ -1,28 +1,43 @@
 let particles = [];
-let nbParticules = 15; 
+let nbParticules = 15;
+let maxDist;
+let baseColor;
+let bgColor;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  
-
   for (let a = 0; a < nbParticules; a++) {
     particles.push(new Particle());
+
   }
   
-  strokeWeight(1);
+  strokeWeight(1.5);
+  drawingContext.shadowBlur = 10;
+  drawingContext.shadowColor = baseColor;
   noFill();
+
+  maxDist = random(200, 600);
+  baseColor = color(random(255), random(255), random(255));
+  bgColor = color(random(10, 40));
 }
 
 function mouseClicked() {
-  background(0); // Clear the canvas
   particles = [];
+
+  nbParticules = int(random(10, 50));
+
+  maxDist = random(200, 600);
+  baseColor = color(random(255), random(255), random(255));
+  bgColor = color(random(10, 40));
+
   for (let a = 0; a < nbParticules; a++) {
     particles.push(new Particle());
+
   }
 }
 
 function draw() {
-  background(0); 
+  background(bgColor, 40); 
 
 
   for (let a = 0; a < particles.length; a++) {
@@ -38,10 +53,10 @@ function draw() {
 
       let d = dist(p1.x, p1.y, p2.x, p2.y);
 
-      if (d > 0 && d < 600) {
+      if (d > 0 && d < maxDist) {
 
-        let luminosite = map(d, 0, 600, 255, 0);
-        stroke(255, luminosite); 
+        let luminosite = map(d, 0, maxDist, 255, 0);
+        stroke(red(baseColor), green(baseColor), blue(baseColor), luminosite);
         
 
         circle(p1.x, p1.y, d);
@@ -49,9 +64,9 @@ function draw() {
       }
     }
 
-    text(a, p1.x, p1.y);
-    textSize(40);
-    stroke(1);
+    textSize(60);
+    textAlign(CENTER);
+    text("GENERATIVE ART", width / 2, height - 60);
   }
 }
 
